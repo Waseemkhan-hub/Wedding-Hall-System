@@ -1,0 +1,44 @@
+:root {
+  --primary:    #8B4A6B;
+  --primary-dark: #6d3a55;
+  --secondary:  #f8f0f4;
+  --text-dark:  #2d2d2d;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+  color: var(--text-dark);
+}
+
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+}
+
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.navbar-brand {
+  color: var(--primary) !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+  border-radius: 12px;
+}
+
+.card:hover {
+  box-shadow: 0 5px 25px rgba(139,74,107,0.15);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}

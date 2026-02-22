@@ -11,12 +11,26 @@ const statusColors = {
   Completed: 'info'
 };
 
+const statusLabels = {
+  0: 'Pending',
+  1: 'Approved',
+  2: 'Rejected',
+  3: 'Cancelled',
+  4: 'Completed'
+};
+
+const getStatus = (status) => {
+  if (typeof status === 'number') return statusLabels[status];
+  return status;
+};
+
 export default function ManageBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [filter,   setFilter]   = useState('All');
 
   const loadBookings = () => {
+    setLoading(true);
     api.get('/Bookings')
        .then(res => setBookings(res.data))
        .catch(err => console.error(err))
@@ -28,7 +42,7 @@ export default function ManageBookings() {
   const handleApprove = async (id) => {
     try {
       await api.put(`/Bookings/${id}/approve`);
-      toast.success('Booking approved!');
+      toast.success('Booking approved successfully!');
       loadBookings();
     } catch {
       toast.error('Failed to approve booking.');
@@ -49,7 +63,7 @@ export default function ManageBookings() {
 
   const filtered = filter === 'All'
     ? bookings
-    : bookings.filter(b => b.status === filter);
+    : bookings.filter(b => getStatus(b.status) === filter);
 
   return (
     <>
@@ -93,8 +107,10 @@ export default function ManageBookings() {
                         <h6 className="mb-0 fw-bold">
                           {b.bookingNumber}
                         </h6>
-                        <span className={`badge bg-${statusColors[b.status]}`}>
-                          {b.status}
+                        <span className={`badge bg-${
+                          statusColors[getStatus(b.status)]
+                          || 'warning'}`}>
+                          {getStatus(b.status)}
                         </span>
                       </div>
                       <p className="mb-1 text-muted">
@@ -108,17 +124,19 @@ export default function ManageBookings() {
                       <p className="mb-0 text-muted">
                         👥 Guests: {b.numberOfGuests}
                         &nbsp;|&nbsp;
-                        💰 Total: <strong>
+                        💰 Total:{' '}
+                        <strong>
                           ${b.totalPrice?.toLocaleString()}
                         </strong>
                       </p>
                     </div>
-                    <div className="col-md-4 text-md-end mt-3 mt-md-0">
-                      {b.status === 'Pending' && (
+                    <div className="col-md-4 text-md-end
+                      mt-3 mt-md-0">
+                      {getStatus(b.status) === 'Pending' && (
                         <div className="d-flex gap-2
                           justify-content-md-end">
                           <button
-                            className="btn btn-success btn-sm text-white"
+                            className="btn btn-success btn-sm"
                             onClick={() => handleApprove(b.id)}>
                             ✓ Approve
                           </button>
@@ -128,6 +146,12 @@ export default function ManageBookings() {
                             ✗ Reject
                           </button>
                         </div>
+                      )}
+                      {getStatus(b.status) !== 'Pending' && (
+                        <span className={`badge bg-${
+                          statusColors[getStatus(b.status)]} fs-6`}>
+                          {getStatus(b.status)}
+                        </span>
                       )}
                     </div>
                   </div>

@@ -18,22 +18,29 @@ export default function Register() {
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await api.post('/Auth/register', form);
-      toast.success('Registration successful! Logging you in...');
-      const user = await login(form.email, form.password);
-      if (user.role === 'Admin') navigate('/admin');
-      else navigate('/halls');
-    } catch (err) {
+  e.preventDefault();
+  if (loading) return;
+  setLoading(true);
+  try {
+    await api.post('/Auth/register', form);
+    toast.success('Registration successful!');
+    const user = await login(form.email, form.password);
+    if (user.role === 'Admin') navigate('/admin');
+    else navigate('/halls');
+  } catch (err) {
+    const errors = err.response?.data?.errors;
+    if (errors) {
+      const messages = Object.values(errors).flat();
+      messages.forEach(msg => toast.error(msg));
+    } else {
       const msg = err.response?.data?.message
         || 'Registration failed.';
       toast.error(msg);
-    } finally {
-      setLoading(false);
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>

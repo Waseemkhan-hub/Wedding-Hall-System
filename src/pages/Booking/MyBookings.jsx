@@ -10,6 +10,19 @@ const statusColors = {
   Completed: 'info'
 };
 
+const statusLabels = {
+  0: 'Pending',
+  1: 'Approved',
+  2: 'Rejected',
+  3: 'Cancelled',
+  4: 'Completed'
+};
+
+const getStatus = (status) => {
+  if (typeof status === 'number') return statusLabels[status];
+  return status;
+};
+
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading,  setLoading]  = useState(true);
